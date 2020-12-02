@@ -32,6 +32,10 @@ def call(params = [:]) {
         {
             args += "--exttest ${env.WORKSPACE}"
         }
+        def addExtTests = params,get('addExtTests', [])
+        for (path in addExtTests) {
+            args += "--exttest ${path}"
+        }
         def parallel = params.get('parallel', 8);
         def extraArgs = params.get('extraArgs', "");
         try {
@@ -58,7 +62,6 @@ def call(params = [:]) {
             shwrap("test -d ${cosaDir}/tmp/kola-upgrade")
         }
     }
-
     stage('Kola') {
         parallel(kolaRuns)
     }
