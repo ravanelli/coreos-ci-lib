@@ -7,6 +7,7 @@
 //   cpu: amount of CPU to request
 //   emptyDirs: []string
 //   cmd: []string
+//   sa: []string
 //   secrets: []string
 //   configMaps: []string
 def call(params = [:], Closure body) {
@@ -14,6 +15,9 @@ def call(params = [:], Closure body) {
     def podObj = readJSON text: podJSON
     podObj['spec']['containers'][0]['image'] = params['image']
 
+    //if (params['sa'] != null) {
+        podObj['spec']['serviceAccount'] = "jenkins"
+    //}
     if (params['runAsUser'] != null) {
         podObj['spec']['containers'][0]['securityContext'] = [runAsUser: params['runAsUser']]
     }
@@ -77,7 +81,7 @@ def call(params = [:], Closure body) {
         def envName = configMap.replace("-", "_").toUpperCase()
         podObj['spec']['containers'][0]['env'] += ['name': envName, 'value': "/run/kubernetes/configMaps/${configMap}".toString()]
     }
-
+    print(podObj)
     // XXX: look into converting to a YAML string instead
     def label = "pod-${UUID.randomUUID().toString()}"
     def podYAML

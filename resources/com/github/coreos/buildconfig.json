@@ -65,7 +65,7 @@
           "to":{
             "kind":"ImageStreamTag",
             "name":"${NAME}:latest",
-            "namespace":"coreos-ci"
+            "namespace":"rravanel-fcos-dev"
           }
         }
       }
