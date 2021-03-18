@@ -63,6 +63,17 @@ def call(params = [:]) {
                 // Showing logs in Jenkins is also a way
                 // to wait for the build to finsih
                 bc.logs('-f')
+                // Wait for the build to finish and check the status of it 
+                bc.watch {
+                    if (it.object().status.phase != "Complete") {
+                        currentBuild.result = 'ABORTED'
+                        error("Error building the image.")
+                    }
+                    // The watch func needs to be finish properly,
+                    // it only allows true/false as a return. That's
+                    // why we can't return the imageName here
+                    return true
+                }
            }
         }
     }
